@@ -63,10 +63,11 @@ public class Account {
         var retValue = CustomEncoder.convertToInt8Array(input: signedBytes)
         let signature = try!Signature(retValue)
   
-    var signedTransaction=SignedTransaction(tx: tx, sig: signature,txId: tx.txID())
-    if(tx.sender != self.address){
-        signedTransaction.authAddress = self.address
-    }
+        var signedTransaction=SignedTransaction(tx: tx, sig: signature,txId: tx.txID())
+        if(tx.sender != self.address){
+            signedTransaction.authAddress = self.address
+        }
+      
         return signedTransaction
     }
     

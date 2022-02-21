@@ -31,8 +31,8 @@ public class AssetParams: Codable,Equatable {
                }
 
                if let ul = url {
-                   if (ul.count > 32) {
-                    throw Errors.runtimeError("asset url cannot be greater than 32 characters")
+                   if (ul.count > 64) {
+                    //throw Errors.runtimeError("asset url cannot be greater than 64 characters")
                    }
                }
 
