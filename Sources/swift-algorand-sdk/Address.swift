@@ -38,7 +38,7 @@ public class Address: Codable,Equatable {
     public init() {}
     
     public init(_ encodedAddress: String) throws {
-        var checksumAddr=CustomEncoder.convertToInt8Array(input: Array(Base32Decode(data:encodedAddress)!))
+        var checksumAddr = CustomEncoder.convertToInt8Array(input: Array(Base32Decode(data:encodedAddress)!))
         if checksumAddr.count != 36 {
             throw AddressError.illegalArgumentException("Input string is an invalid address. Wrong length")
         } else {
