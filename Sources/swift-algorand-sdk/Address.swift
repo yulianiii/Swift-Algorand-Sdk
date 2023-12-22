@@ -20,10 +20,10 @@ extension Array where Element: Comparable {
 }
 
 public class Address: Codable,Equatable {
-    static var APP_ID_PREFIX : [Int8] = [97, 112, 112, 73, 68]
-    public var BYTES_SIGN_PREFIX : [Int8] = [77,88];
+    static var APP_ID_PREFIX: [Int8] = [97, 112, 112, 73, 68]
+    public var BYTES_SIGN_PREFIX: [Int8] = [77,88];
     
-    public var bytes : [Int8]? = Array(repeating:0,count:32)
+    public var bytes: [Int8]? = Array(repeating:0,count:32)
     public var description:String {
         return (try? self.encodeAsString()) ?? ""
     }
@@ -32,7 +32,7 @@ public class Address: Codable,Equatable {
         if bytes.count != 32 {
             throw AddressError.illegalArgumentException("Given address length is not 32")
         }
-        self.bytes=bytes
+        self.bytes = bytes
     }
     
     public init() {}
@@ -56,7 +56,7 @@ public class Address: Codable,Equatable {
             var expectedChecksum: [Int8] = Array(repeating: 0, count: 4)
             
             for i in 0..<4 {
-                expectedChecksum[i]=hashedAddr[28+i]
+                expectedChecksum[i] = hashedAddr[28+i]
             }
             
             if checksum.containsSameElements(as: expectedChecksum) {
@@ -69,22 +69,22 @@ public class Address: Codable,Equatable {
     
     func encodeAsString() throws -> String {
         if let ed25519PubKey = bytes{
-            var sha512hash=SHA512_256().hash(ed25519PubKey)
-            var checkSumAddress:[Int8] = Array(repeating: 0, count: 36)
+            var sha512hash = SHA512_256().hash(ed25519PubKey)
+            var checkSumAddress: [Int8] = Array(repeating: 0, count: 36)
             for i in 0..<32{
-                checkSumAddress[i]=ed25519PubKey[i]
+                checkSumAddress[i] = ed25519PubKey[i]
             }
             var rowCounter=28
             for i in 32..<36 {
                 checkSumAddress[i] = sha512hash[rowCounter]
-                rowCounter=rowCounter+1
+                rowCounter=rowCounter + 1
             }
             let uint8ChecksumAddr = checkSumAddress.map{ (int8Byte) -> UInt8 in
                 return unsafeBitCast(int8Byte, to: UInt8.self)
             }
             let dat = Data(uint8ChecksumAddr)
             let Uint8Base32Address = Base32Encode(data: dat)
-            let base32Address=Uint8Base32Address.replacingOccurrences(of: "=", with: "")
+            let base32Address = Uint8Base32Address.replacingOccurrences(of: "=", with: "")
             return base32Address
         }else{
             throw AddressError.encodingError("unexpected address length")
@@ -139,5 +139,4 @@ public class Address: Codable,Equatable {
         let digest = try SHA512_256().hash( APP_ID_PREFIX + CustomEncoder.encodeUInt64(appId))
         return try Address(digest)
     }
-    
 }
