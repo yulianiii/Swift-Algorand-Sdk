@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Account.swift
+//
 //
 //  Created by Jesulonimi on 1/30/21.
 //
@@ -22,7 +22,6 @@ public struct Account {
     
     
    public init(_ bytes:[Int8]?) throws {
-   
         if  let Ubytes = bytes{
             seed = try Seed(bytes:CustomEncoder.convertToUInt8Array(input: Ubytes))
         }else{
@@ -31,7 +30,7 @@ public struct Account {
        
         self.keyPair = KeyPair(seed: seed!)
       
-        let ed25519PubKey = keyPair.publicKey.bytes.map{(UInt8bytes) -> Int8 in
+        let ed25519PubKey = keyPair.publicKey.bytes.map{ (UInt8bytes) -> Int8 in
             return unsafeBitCast(UInt8bytes, to: Int8.self)
         }
         self.address=try! Address(ed25519PubKey)
@@ -84,12 +83,12 @@ public struct Account {
                 var mSig:MultisigSignature =  MultisigSignature(version: from.version, threshold: from.threshold);
 
                 for i in 0..<from.publicKeys.count {
-                       if (i == myI) {
+                    if (i == myI) {
                         mSig.subsigs!.append(MultisigSubsig(key: myPK, sig: txSig.sig!))
-                       } else {
+                    } else {
                         mSig.subsigs?.append(MultisigSubsig(key: from.publicKeys[i]));
-                       }
-                   }
+                    }
+                }
 
                 return  SignedTransaction(tx: tx, mSig: mSig, txId: tx.txID());
                }
@@ -284,3 +283,4 @@ public struct Account {
 //
 //        }
 }
+
