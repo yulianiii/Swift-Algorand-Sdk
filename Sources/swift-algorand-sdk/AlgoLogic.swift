@@ -1,11 +1,12 @@
 //
-//  File.swift
-//  
+//  AlgoLogic.swift
+//
 //
 //  Created by Jesulonimi on 3/7/21.
 //
 
 import Foundation
+
 extension BinaryInteger where Self: FixedWidthInteger {
 
     /// Safely converts Float to BinaryInteger (Uint8, Uint16, Int8, and so on), truncate remains that do not fit in the instance of BinaryInteger range value.
@@ -28,7 +29,8 @@ extension BinaryInteger where Self: FixedWidthInteger {
         }
     }
 }
-public class AlgoLogic{
+
+public class AlgoLogic {
     
     private var MAX_COST = 20000;
        private var MAX_LENGTH = 1000;
@@ -45,18 +47,16 @@ public class AlgoLogic{
         if value <= 0{
             throw Errors.illegalArgumentError("putUVarint expects non-negative values.")
         }
+        
         var funcValue=value
-
         var buffer:[Int8]=Array()
 
-        
         while funcValue>=128 {
             buffer.append(Int8(truncatingIfNeeded: funcValue)&unsafeBitCast(UInt8(255), to:Int8.self)|unsafeBitCast(UInt8(128), to:Int8.self))
       
-                funcValue =   funcValue>>7
-      
-     
+            funcValue =   funcValue>>7
         }
+        
         buffer.append(Int8(truncatingIfNeeded: funcValue)&unsafeBitCast(UInt8(255), to: Int8.self))
   
         var out:[Int8]=Array()
@@ -64,7 +64,7 @@ public class AlgoLogic{
             out.append(buffer[i])
         }
         
-           return out;
+        return out;
        }
  
     public static func getUVarint(buffer:[Int8],  bufferOffset:Int)->VarintResult {
@@ -73,18 +73,18 @@ public class AlgoLogic{
        
         for i in 0..<buffer.count{
             var b:Int = Int(unsafeBitCast(buffer[bufferOffset + i], to: UInt8.self)  & 255)
-            if b<128{
+            if b<128 {
                 if i<=9 && (i != 9 || b<=1){
                     return VarintResult(value: x | (Int(b) & 255) << s, length:  i + 1)
                 }
-            return VarintResult(value: 0, length: -(i + 1))
-                
+                return VarintResult(value: 0, length: -(i + 1))
             }
+            
             x |= (Int(b) & 127 & 255) << s;
             s += 7;
         }
 
-          return VarintResult();
+        return VarintResult();
       }
     
     public static func loadLangSpec()   {
@@ -225,27 +225,16 @@ public class AlgoLogic{
                         var size:Int=0;
                         while pc<program.count{
                             var opcode:Int
-//                            if(program[pc] < -126){
-//                                opcode = Int(program[pc]) & 255
-//                            }else{
-//                                opcode = Int(program[pc] & unsafeBitCast(UInt8(255), to:Int8.self))
-//                            }
                             opcode = Int(program[pc]) & 255
-                 
-                           
-                         
-//                            if(opcode>=opcodes!.count||opcode<=0){
-//                                throw Errors.illegalArgumentError("invalid instruction: \(opcode)")
-//                            }
-                           
+
                             let isIndexValid = opcodes!.indices.contains(opcode)
-                            if(!isIndexValid){
+                            if !isIndexValid {
                                 throw Errors.illegalArgumentError("invalid instruction: \(opcode)")
                             }
-                            var op=opcodes?[opcode]
+                            var op = opcodes?[opcode]
                             if (op == nil){
-                                throw Errors.illegalArgumentError("invalid instruction: \(opcode)");
-                                     }
+                                throw Errors.illegalArgumentError("invalid instruction: \(opcode)")
+                            }
                             cost = cost+op!.Cost!
                             size = op!.Size!
                             if size == 0{
@@ -360,9 +349,8 @@ public class AlgoLogic{
         public var LogicSigVersion:Int?
         public var Ops:[Operation]?
 
-          init() {
-           }
-       }
+        init() {}
+    }
 
     private class Operation:Codable {
         var Opcode:Int?
@@ -401,3 +389,4 @@ public class AlgoLogic{
         }
     }
 }
+
